@@ -1,3 +1,5 @@
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import FileResponse
 from repair import repair_stl
@@ -27,4 +29,6 @@ async def download(file_id: str):
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="application/sla", filename="repaired.stl")
     return {"error": "Datei nicht gefunden"}
+
+app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
