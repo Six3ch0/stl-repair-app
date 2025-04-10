@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>STL Repair Tool</title>
+</head>
+<body>
+  <h1>STL Repair Tool 🛠️</h1>
+  <input type="file" id="stlFile" />
+  <button onclick="uploadFile()">Hochladen & Reparieren</button>
+  <p id="status"></p>
+  <p><a id="downloadLink" href="#" style="display:none;" target="_blank">Reparierte Datei herunterladen</a></p>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('stlFile');
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Bitte eine STL-Datei auswählen.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      document.getElementById("status").innerText = "Wird repariert... bitte warten";
+
+      const response = await fetch("http://127.0.0.1:8000/upload/", {
+        method: "POST",
+        body: formData
+      });
+
+      const result = await response.json();
+      if (result.download_url) {
+        const fullUrl = "http://127.0.0.1:8000" + result.download_url;
+        document.getElementById("status").innerText = "Reparatur abgeschlossen!";
+        const link = document.getElementById("downloadLink");
+        link.href = fullUrl;
+        link.style.display = "inline";
+      } else {
+        document.getElementById("status").innerText = "Fehler bei der Reparatur.";
+      }
+    }
+  </script>
+</body>
+</html>
+
